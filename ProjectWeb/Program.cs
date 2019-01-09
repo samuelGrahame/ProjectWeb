@@ -102,9 +102,14 @@ namespace ProjectWeb
                         }
                     }
 
-                    if(isHTML)
+                    if(isHTML && stateManager.Globals.builder.Length > 0)
                     {
-                        stateManager.Globals.builder.AppendLine("</html>");
+                        ct = context.Response.ContentType;
+                        isHTML = ct == null || ct.ToLower().Trim() == "text/html";
+                        if(isHTML)
+                        {
+                            stateManager.Globals.builder.AppendLine("</html>");
+                        }                        
                     }                    
 
                     st.Stop();
@@ -116,7 +121,7 @@ namespace ProjectWeb
 
                     result = stateManager.Globals.builder.ToString();
                     // if the user has written out aka download file down pass html
-                    if(context.Response.OutputStream.Length == 0)
+                    if(result.Length > 0)
                     {
                         Echo(ref result, context);
                     }                    

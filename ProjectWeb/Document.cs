@@ -29,7 +29,7 @@ namespace ProjectWeb
             {                
                 stateManager.NeedBase = false;
                 // TODO - make this as base...
-                await stateManager.Push("void Echo(string input) { builder.Append(input); } void Echo(byte[] buffer) { context.Response.ContentLength64 = buffer.Length; Context.Response.OutputStream.Write(buffer, 0, buffer.Length); } ");                
+                await stateManager.Push("void Echo(string input) { builder.Append(input); } void Echo(byte[] buffer) { builder.Length = 0; Context.Response.OutputStream.Write(buffer, 0, buffer.Length); } ");                
             }
 
             var builder = stateManager.Globals.builder;

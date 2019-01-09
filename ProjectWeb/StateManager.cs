@@ -6,6 +6,7 @@ using ProjectWeb.Global;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static ProjectWeb.Document;
@@ -48,7 +49,8 @@ namespace ProjectWeb
                 var options = ScriptOptions.Default.WithReferences(
                         typeof(ProjectWeb.Mysql.Mysql).Assembly,
                         typeof(MySqlConnection).Assembly,
-                        typeof(ProjectWeb.Other.Extensions).Assembly).WithImports(
+                        typeof(ProjectWeb.Other.Extensions).Assembly,
+                        typeof(HttpListener).Assembly).WithImports(
                         "ProjectWeb.Mysql", "MySql.Data.MySqlClient", "ProjectWeb.Other.Extensions").
                         WithEmitDebugInformation(false).
                         WithMetadataResolver(new MissingResolver());
