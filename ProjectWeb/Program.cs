@@ -72,7 +72,7 @@ namespace ProjectWeb
                     {
                         Globals = new Params
                         {
-                            builder = new StringBuilder()   ,
+                            builder = new StringBuilder(),
                             Context = context
                         }
                     };
@@ -115,8 +115,11 @@ namespace ProjectWeb
                     }
 
                     result = stateManager.Globals.builder.ToString();
-
-                    Echo(ref result, context);
+                    // if the user has written out aka download file down pass html
+                    if(context.Response.OutputStream.Length == 0)
+                    {
+                        Echo(ref result, context);
+                    }                    
                 }
                 catch (Exception ex)
                 {

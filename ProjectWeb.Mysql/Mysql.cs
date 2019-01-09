@@ -114,7 +114,7 @@ namespace ProjectWeb.Mysql
             Database = database;
             Port = port;
 
-            Connection = new MySqlConnection($"Server={Servername};Port={port};Uid={username};Pwd='{password}'" + (string.IsNullOrWhiteSpace(database) ? "" : $"Database={database}") + ";");
+            Connection = new MySqlConnection($"Server={Servername};Port={port};Uid={username};Pwd='{password}';" + (string.IsNullOrWhiteSpace(database) ? "" : $"Database={database}") + ";");
             Connection.Open();
         }
 
