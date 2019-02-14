@@ -40,11 +40,7 @@ namespace ProjectWeb
             public StateManager StateManager;
             public bool IsLocal;            
         }
-
-        private static string DataFilePath => HttpRuntime.AppDomainAppVirtualPath != null ?
-    HttpRuntime.AppDomainAppPath :
-    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
+        
         public static RequestContextInfo GetRequestPath<T>(T context)
         {
             RequestContextInfo requestContextInfo = new RequestContextInfo();
