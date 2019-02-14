@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectWeb.Mysql", "Project
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectWeb.Other", "ProjectWeb.Other\ProjectWeb.Other.csproj", "{E59D670B-707B-4FA1-976C-1AFAE8AAAEAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectWebAspTest", "ProjectWebAspTest\ProjectWebAspTest.csproj", "{DE88DAB2-DD85-4124-BF3A-29020FFFB3FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E59D670B-707B-4FA1-976C-1AFAE8AAAEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E59D670B-707B-4FA1-976C-1AFAE8AAAEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E59D670B-707B-4FA1-976C-1AFAE8AAAEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE88DAB2-DD85-4124-BF3A-29020FFFB3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE88DAB2-DD85-4124-BF3A-29020FFFB3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE88DAB2-DD85-4124-BF3A-29020FFFB3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE88DAB2-DD85-4124-BF3A-29020FFFB3FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

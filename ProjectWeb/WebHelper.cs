@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -40,14 +41,22 @@ namespace ProjectWeb
             public bool IsLocal;            
         }
 
+        private static string DataFilePath => HttpRuntime.AppDomainAppVirtualPath != null ?
+    HttpRuntime.AppDomainAppPath :
+    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
         public static RequestContextInfo GetRequestPath<T>(T context)
         {
             RequestContextInfo requestContextInfo = new RequestContextInfo();
             string fileRequest = "";
+            HttpServerUtility Server = null;
+            
+            bool isStandalone = false;
             if(context is HttpContext httpContext)
             {
-                fileRequest = httpContext.Request.Url.LocalPath;
+                fileRequest = httpContext.Request.Url.LocalPath;                
                 requestContextInfo.ContentType = httpContext.Request.ContentType;
+
                 requestContextInfo.StateManager = new StateManager()
                 {
                     Builder = new StringBuilder()
@@ -59,9 +68,12 @@ namespace ProjectWeb
                 };
                 requestContextInfo.IsLocal = httpContext.Request.IsLocal;
 
+                Server = httpContext.Server;
+
             }
             else if (context is HttpListenerContext httpContextListener)
             {
+                isStandalone = true;
                 fileRequest = httpContextListener.Request.Url.LocalPath;
                 requestContextInfo.ContentType = httpContextListener.Request.ContentType;
                 requestContextInfo.StateManager = new StateManager()
@@ -77,18 +89,29 @@ namespace ProjectWeb
             }
             if (string.IsNullOrWhiteSpace(fileRequest) || fileRequest == "/")
             {
-                fileRequest = "index.html";
+                if(isStandalone)
+                {
+                    fileRequest = "index.html";
+                }                
             }            
             if (fileRequest.EndsWith(".html"))
             {
-                requestContextInfo.Page = $"{Directory.GetCurrentDirectory()}/wwwroot/{fileRequest}";
+                if(isStandalone)
+                {
+                    requestContextInfo.Page = $"{Directory.GetCurrentDirectory()}/wwwroot/{fileRequest}";
+                }
+                else
+                {
+                    requestContextInfo.Page = Server.MapPath($"~{fileRequest}");
+                }
+                
                 requestContextInfo.FileRequest = fileRequest;                
                 return requestContextInfo;
             }
             return null;
         }
 
-        public static async void ProcessAsync<T>(T context)
+        public static async Task ProcessAsync<T>(T context)
         {
             // process request and make response
             HttpContext httpContext = context is HttpContext ? context as HttpContext  : null;
@@ -110,12 +133,12 @@ namespace ProjectWeb
                     string ct = requestInfo.ContentType;
                     bool isHTML = ct == null || ct.ToLower().Trim() == "text/html";
                     var stateManager = requestInfo.StateManager;
-                    if (isHTML)
+                    if (!UseDefault && isHTML)
                     {
                         stateManager.Builder.AppendLine("<html>");
                     }
-                    var fileRequestToLower = requestInfo.FileRequest.ToLower();
-                    var absPath = Path.GetFullPath(fileRequestToLower);
+                    
+                    var absPath = requestInfo.Page.ToLower();
 
                     if (StateCache.Cache.ContainsKey(absPath))
                     {
@@ -124,7 +147,7 @@ namespace ProjectWeb
                     else
                     {
                         var file = new Document.IncludedFiles();
-                        file.Files.Add(fileRequestToLower);
+                        file.Files.Add(absPath);
                         TextReader tr = new StreamReader(requestInfo.Page);
 
                         await Document.ParseAsync(tr.ReadToEnd(), stateManager, file);
@@ -135,15 +158,18 @@ namespace ProjectWeb
                         }
                     }
 
-                    if (isHTML && stateManager.Builder.Length > 0)
+                    if(!UseDefault)
                     {
-                        ct = requestInfo.StateManager.Globals.GetResponseContentType();
-                        isHTML = ct == null || ct.ToLower().Trim() == "text/html";
-                        if (isHTML)
+                        if (isHTML && stateManager.Builder.Length > 0)
                         {
-                            stateManager.Builder.AppendLine("</html>");
+                            ct = requestInfo.StateManager.Globals.GetResponseContentType();
+                            isHTML = ct == null || ct.ToLower().Trim() == "text/html";
+                            if (isHTML)
+                            {
+                                stateManager.Builder.AppendLine("</html>");
+                            }
                         }
-                    }
+                    }                    
 
                     st.Stop();
 
@@ -187,7 +213,7 @@ namespace ProjectWeb
                 }
                 if (UseDefault)
                 {
-                    httpContext.Response.Close();
+                    httpContext.Response.Flush();
                 }
                 else
                 {
