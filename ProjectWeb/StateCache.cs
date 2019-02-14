@@ -47,11 +47,11 @@ namespace ProjectWeb
                     }
                 }else if (operation is ContentOperation contentOperation)
                 {
-                    stateManager.Globals.builder.Append(contentOperation.Content);
+                    stateManager.Builder.Append(contentOperation.Content);
                 }
             }
 
-            return stateManager.Globals.builder;
+            return stateManager.Builder;
         }
     }
 

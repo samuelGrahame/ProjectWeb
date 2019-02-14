@@ -15,7 +15,8 @@ namespace ProjectWeb
 {
     public class StateManager
     {
-        public Params Globals;
+        public StringBuilder Builder;
+        public IParams Globals;
         public bool NeedBase = true;
         private ScriptState<object> state;
         public StateCache StateCache = new StateCache();

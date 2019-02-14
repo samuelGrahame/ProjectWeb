@@ -32,7 +32,7 @@ namespace ProjectWeb
                 await stateManager.Push("void Echo(string input) { builder.Append(input); } void Echo(byte[] buffer) { builder.Length = 0; Context.Response.OutputStream.Write(buffer, 0, buffer.Length); } ");                
             }
 
-            var builder = stateManager.Globals.builder;
+            var builder = stateManager.Builder;
 
             var codeBuilder = new StringBuilder();
             int length = data.Length;
