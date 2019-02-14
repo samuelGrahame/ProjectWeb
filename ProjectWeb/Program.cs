@@ -15,17 +15,16 @@ namespace ProjectWeb
     {
         static bool Running = true;
         static void Main(string[] args)
-        {
-            //var state = await CSharpScript.RunAsync("int x = 1;");
-            //state = await state.ContinueWithAsync("int y = 2;");
-            //state = await state.ContinueWithAsync("x+y");
-            //Console.WriteLine(state.ReturnValue);            
+        {            
             // Create a listener.
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add("http://127.0.0.1:8180/");
             listener.Prefixes.Add("http://localhost:8180/");
 
             listener.Start();
+
+            if (Debugger.IsAttached)
+                Process.Start("http://localhost:8180/");
             
             Console.WriteLine("Started");
             while (Running)
@@ -58,7 +57,7 @@ namespace ProjectWeb
 
             string page = $"{Directory.GetCurrentDirectory()}/wwwroot/{fileRequest}";
 
-            if(context.Request.Url.LocalPath.EndsWith(".html"))
+            if(fileRequest.EndsWith(".html"))
             {
                 string result;
                 try
